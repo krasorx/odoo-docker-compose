@@ -1,5 +1,5 @@
 #!/bin/bash
-# Substitute environment variables into the config file
-envsubst < /etc/odoo/odoo.conf.template > /etc/odoo/odoo.conf
-# Start Odoo with the generated config
+# Substitute ODOO_ADMIN_PASSWORD using sed
+sed "s/{{ODOO_ADMIN_PASSWORD}}/$ODOO_ADMIN_PASSWORD/g" /etc/odoo/odoo.conf.template > /etc/odoo/odoo.conf
+# Start Odoo
 exec "$@"
