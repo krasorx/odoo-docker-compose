@@ -1,0 +1,34 @@
+services:
+  odoo:
+    container_name: odoo_igniter
+    image: odoo:18
+    restart: always
+    ports:
+      - "8069:8069"
+    depends_on:
+      - postgres
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./odoo/config/:/etc/odoo/odoo.conf
+      - ./odoo/addons/:/mnt/extra-addons
+    environment:
+      - HOST=postgres
+      - USER=${POSTGRES_USER}
+      - PASSWORD=${POSTGRES_PASSWORD}
+
+  postgres:
+    container_name: postgres_igniter
+    image: postgres:17.0-bullseye
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+  odoo_data:
