@@ -6,7 +6,7 @@ set -e
 : ${DB_HOST:='postgres'}
 : ${DB_PORT:=5432}
 : ${DB_USER:='odoo'}
-: ${DB_PASSWORD:='adminpassword'}
+: ${DB_PASSWORD:='hoshimachi'}
 
 # Path to the Odoo configuration file
 ODOO_RC="/etc/odoo/odoo.conf"
@@ -29,16 +29,17 @@ check_config "db_port" "$DB_PORT"
 check_config "db_user" "$DB_USER"
 check_config "db_password" "$DB_PASSWORD"
 
-# Substitute ODOO_ADMIN_PASSWORD in the config file
 sed "s/{{ODOO_ADMIN_PASSWORD}}/$ODOO_ADMIN_PASSWORD/g" /etc/odoo/odoo.conf.template > "$ODOO_RC"
 
-# Debug: Log the database parameters
 echo "DB_HOST=$DB_HOST DB_PORT=$DB_PORT DB_USER=$DB_USER DB_PASSWORD=$DB_PASSWORD" > /tmp/debug.log
 
-# Wait for PostgreSQL to be ready (requires wait-for-psql.py or similar)
-# If you don't have wait-for-psql.py, we'll replace this with a simple sleep or skip it
-sleep 10  # Temporary workaround; replace with a proper wait script if available
+# Wait for PostgreSQL to be ready
+sleep 10
 
-# Explicitly set database parameters for all Odoo operations
-odoo --init base "${DB_ARGS[@]}" --database postgres --stop-after-init
+# Initialize the database (log output for debugging)
+echo "Initializing Odoo database..." >> /tmp/debug.log
+odoo --init base "${DB_ARGS[@]}" --database postgres --stop-after-init 2>&1 | tee -a /tmp/debug.log
+
+# Start Odoo
+echo "Starting Odoo server..." >> /tmp/debug.log
 exec odoo "${DB_ARGS[@]}" --database postgres

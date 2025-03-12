@@ -8,3 +8,4 @@ db_host = postgres
 db_port = 5432
 db_user = odoo
 db_password = fgroadster
+proxy_mode = True

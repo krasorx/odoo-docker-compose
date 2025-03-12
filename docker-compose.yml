@@ -21,10 +21,14 @@ services:
       - traefik_net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.odoo18.rule=Host(`${ODOO_HOST}`)"
-      - "traefik.http.routers.odoo18.entrypoints=websecure"
-      - "traefik.http.routers.odoo18.tls.certresolver=letsencrypt"
-      - "traefik.http.services.odoo18.loadbalancer.server.port=8069"
+      - "traefik.http.routers.odoo.rule=Host(`${ODOO_HOST}`) && PathPrefix(`/odoo`)"
+      - "traefik.http.routers.odoo.entrypoints=websecure"
+      - "traefik.http.routers.odoo.tls=true"
+      - "traefik.http.routers.odoo.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.odoo.service=odoo"
+      - "traefik.http.services.odoo.loadbalancer.server.port=8069"
+      - "traefik.http.middlewares.odoo-strip.stripprefix.prefixes=/odoo"
+      - "traefik.http.routers.odoo.middlewares=odoo-strip"
 
   postgres:
     command: postgres -c log_connections=on -c log_min_messages=DEBUG1
