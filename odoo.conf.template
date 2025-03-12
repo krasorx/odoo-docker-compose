@@ -1,5 +1,5 @@
 [options]
-addons_path = /mnt/extra-addons/gnoquicet
+addons_path = /mnt/extra-addons/gnoquicet,/mnt/extra-addons/random_addons
 data_dir = /var/lib/odoo
 log_handler = :INFO
 log_level = info
@@ -9,3 +9,4 @@ db_port = 5432
 db_user = odoo
 db_password = fgroadster
 proxy_mode = True
+http_port = 8069

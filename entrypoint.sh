@@ -36,10 +36,22 @@ echo "DB_HOST=$DB_HOST DB_PORT=$DB_PORT DB_USER=$DB_USER DB_PASSWORD=$DB_PASSWOR
 # Wait for PostgreSQL to be ready
 sleep 10
 
-# Initialize the database (log output for debugging)
-echo "Initializing Odoo database..." >> /tmp/debug.log
-odoo --init base "${DB_ARGS[@]}" --database postgres --stop-after-init 2>&1 | tee -a /tmp/debug.log
+# Initialize Odoo database
+echo "Initializing Odoo database..."
+odoo --init base \
+  --db_host="$DB_HOST" \
+  --db_port="$DB_PORT" \
+  --db_user="$DB_USER" \
+  --db_password="$DB_PASSWORD" \
+  --stop-after-init
 
-# Start Odoo
-echo "Starting Odoo server..." >> /tmp/debug.log
-exec odoo "${DB_ARGS[@]}" --database postgres
+# Start Odoo with proxy mode and bind to all interfaces
+echo "Starting Odoo server..."
+exec odoo \
+  --db_host="$DB_HOST" \
+  --db_port="$DB_PORT" \
+  --db_user="$DB_USER" \
+  --db_password="$DB_PASSWORD" \
+  --http-interface=0.0.0.0 \
+  --http-port=8069 \
+  --proxy-mode
